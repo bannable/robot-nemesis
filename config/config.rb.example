@@ -1,0 +1,21 @@
+# Edit settings below here
+
+DEVELOPMENT	= true
+
+DB_DRIVER	= 'postgres'
+DB_USER		= 'USERNAME'
+DB_PASSWORD	= 'PASSWORD'
+DB_SERVER	= 'localhost'
+DB_SCHEMA	= 'sneaky'
+
+BOT_NAME	= 'BOTNAME'
+BOT_OAUTH_TOKEN	= 'oauth:TOKEN'
+
+
+# Do not edit the lines below
+
+if (DEVELOPMENT)
+	DB_DRIVER_STRING = ('sqlite::memory:')
+else
+	DB_DRIVER_STRING = DB_DRIVER << '://' << DB_USER << ':' << DB_PASSWORD << '@' << DB_SERVER << '/' << DB_SCHEMA
+end
