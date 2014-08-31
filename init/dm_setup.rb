@@ -53,6 +53,7 @@ class Match
 		match = Match.create()
 		bfm = FighterMatch.create(:fighter => blue, :match => match, :color => 'blue')
 		rfm = FighterMatch.create(:fighter => red, :match => match, :color => 'red')
+		return [ match, blue, red, bfm, rfm ]
 	end
 end
 
