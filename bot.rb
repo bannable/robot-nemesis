@@ -2,6 +2,7 @@ require 'cinch'
 require 'data_mapper'
 require './config/config.rb'
 require './init/dm_setup'
+require './init/constants'
 
 if (DEVELOPMENT)
 	require './tests/dm_tests'
@@ -9,12 +10,6 @@ end
 
 # Create our first bot -- this one is our twitch interface
 scraper = Cinch::Bot.new do
-	PATTERN_NEW		= /Bets are OPEN/
-	PATTERN_NEW_SPLIT	= /Bets are OPEN for ((?:.*)) vs ((?:.*))! \(([XSABP]) Tier\)  \(?([\w]+)\)?/
-	PATTERN_START		= /Bets are locked/
-	PATTERN_POT		= /Bets are locked\. ((?:.*)) \(([-\d]+)\) - \$((?:[\d,]+)), ((?:.*)) \(([-\d]+)\)/
-	#PATTERN_END		= 
-	
 	configure do |c|
 		c.nick = BOT_NAME
 		c.user = BOT_NAME
