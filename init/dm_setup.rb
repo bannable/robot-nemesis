@@ -2,7 +2,7 @@
 DataMapper::Logger.new($stdout, :debug)
 
 if (DEVELOPMENT)
-	DataMapper.setup(:default, 'sqlite::memory:')
+	DataMapper.setup(:default, 'sqlite:development.db')
 else
 	DataMapper.setup(:default, CONFIG['db_driver'])
 end
