@@ -1,7 +1,7 @@
 #TODO: For now, we're going to log everything
 DataMapper::Logger.new($stdout, :debug)
 
-if (DEVELOPMENT)
+if (DEVELOPMENT && CONFIG['dev_db'])
 	DataMapper.setup(:default, 'sqlite:development.db')
 else
 	DataMapper.setup(:default, CONFIG['db_driver'])
