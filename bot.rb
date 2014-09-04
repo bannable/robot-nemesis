@@ -48,10 +48,15 @@ scraper = Cinch::Bot.new do
 	on :message, PATTERN_NEW do |m|
 		return unless m.user == "waifu4u" && bot_ready
 		if (PATTERN_NEW_SPLIT =~ m.message)
-			red = Fighter::first_or_create($1)
-			blue = Fighter::first_or_create($2)
-			puts "Red: " << red.name
-			puts "Blue: " << blue.name
+			if get_mode($4) == 'ex'
+				puts "Red: " << $1
+				puts "Blue: " << $2
+			else
+				red = Fighter::first_or_create($1)
+				blue = Fighter::first_or_create($2)
+				puts "Red: " << red.name
+				puts "Blue: " << blue.name
+			end
 			puts "Tier: #{$3}"
 			puts "Mode: " << get_mode($4)
 		end
@@ -60,10 +65,15 @@ scraper = Cinch::Bot.new do
 	on :message, PATTERN_START do |m|
 		return unless m.user == "waifu4u" && bot_ready
 		if (PATTERN_START_SPLIT =~ m.message)
-			red = Fighter::first_or_create($1)
-			blue = Fighter::first_or_create($3)
-			puts "Red: " << red.name << " (#{$2})"
-			puts "Blue: " << blue.name << " (#{$4})"
+			if get_mode(4) == 'ex'
+				puts "Red: " << $1 << " (#{$2})"
+				puts "Blue: " << $3 << " (#{$4})"
+			else
+				red = Fighter::first_or_create($1)
+				blue = Fighter::first_or_create($3)
+				puts "Red: " << red.name << " (#{$2})"
+				puts "Blue: " << blue.name << " (#{$4})"
+			end
 		end
 	end	
 
