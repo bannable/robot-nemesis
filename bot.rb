@@ -34,8 +34,10 @@ scraper = Cinch::Bot.new do
 	on :message, PATTERN_NEW do |m|
 		return unless m.user == "waifu4u" && bot_ready
 		if (PATTERN_NEW_SPLIT =~ m.message)
-			puts "Red: #{$1}"
-			puts "Blue: #{$2}"
+			red = Fighter::find_or_create($1)
+			blue = Fighter::find_or_create($2)
+			puts red
+			puts blue
 			puts "Tier: #{$3}"
 			puts "Mode: #{$4}"
 		end
