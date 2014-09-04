@@ -12,16 +12,18 @@ if (DEVELOPMENT)
 	require './tests/dm_tests'
 end
 
-def get_mode(input)
+@game_mode = 'unknown'
+
+def update_mode(input)
 	case input
 	when 'more'
-		return 'mm'
+		@game_mode = 'mm'
 	when 'characters'
-		return 'to'
+		@game_mode = 'to'
 	when 'exhibition'
-		return 'ex'
+		@game_mode = 'ex'
 	else
-		return 'mm'
+		@game_mode = 'unknown'
 	end
 end
 
@@ -46,9 +48,11 @@ scraper = Cinch::Bot.new do
 
 
 	on :message, PATTERN_NEW do |m|
-		return unless m.user == "waifu4u" && bot_ready
+		return unless m.user == "waifu4u"
 		if (PATTERN_NEW_SPLIT =~ m.message)
-			if get_mode($4) == 'ex'
+			update_mode($4)
+			if @game_mode == 'ex'
+				# Do not create entries from Exhibition fights
 				puts "Red: " << $1
 				puts "Blue: " << $2
 			else
@@ -57,15 +61,18 @@ scraper = Cinch::Bot.new do
 				puts "Red: " << red.name
 				puts "Blue: " << blue.name
 			end
-			puts "Tier: #{$3}"
-			puts "Mode: " << get_mode($4)
+			puts "Mode: " << @game_mode.upcase << " (Tier: #{$3})"
 		end
 	end
 
 	on :message, PATTERN_START do |m|
-		return unless m.user == "waifu4u" && bot_ready
+		return unless m.user == "waifu4u"
 		if (PATTERN_START_SPLIT =~ m.message)
-			if get_mode(4) == 'ex'
+			if (@game_mode == nil)
+				# Our state is unknown. Do not record match.
+				return
+			elsif (@game_mode == 'ex')
+				# Do not create entries from Exhibition fights
 				puts "Red: " << $1 << " (#{$2})"
 				puts "Blue: " << $3 << " (#{$4})"
 			else
@@ -73,15 +80,16 @@ scraper = Cinch::Bot.new do
 				blue = Fighter::first_or_create($3)
 				puts "Red: " << red.name << " (#{$2})"
 				puts "Blue: " << blue.name << " (#{$4})"
+				puts "Current mode is: " << @game_mode.upcase
 			end
 		end
 	end	
 
 	on :message, PATTERN_END do |m|
-		return unless m.user == "waifu4u" && bot_ready
+		return unless m.user == "waifu4u"
 		if (PATTERN_END =~ m.message)
 			puts "Winner #{$1} (#{$2})"
-			puts "Current mode " << get_mode($4).upcase << " changes in #{$3} matches"
+			puts "Current mode " << @game_mode.upcase << " changes in #{$3} matches"
 		end
 	end
 
