@@ -2,15 +2,17 @@ require 'cinch'
 require 'data_mapper'
 require 'json'
 require 'yaml'
-require './init/dm_setup'
 require './init/constants'
 require './init/salt'
+
+CONFIG = YAML.load_file('config/config.yml') unless defined? CONFIG
+DEVELOPMENT = CONFIG['dev']
+require './init/dm_setup'
 
 if (DEVELOPMENT)
 	require './tests/dm_tests'
 end
 
-CONFIG = YAML.load_file('config.yml') unless defined? CONFIG
 
 # Create our first bot -- this one is our twitch interface
 scraper = Cinch::Bot.new do
@@ -21,7 +23,7 @@ scraper = Cinch::Bot.new do
 		c.realname = CONFIG['bot_name']
 		c.server = "irc.twitch.tv"
 		c.channels = ["#saltybet"]
-		c.password = CONFIG['oauth_token']
+		c.password = 'oauth:' << CONFIG['oauth_token']
 	end
 
 	on :connect do

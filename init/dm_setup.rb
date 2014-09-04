@@ -1,4 +1,8 @@
-DataMapper.setup(:default, DB_DRIVER_STRING)
+if (DEVELOPMENT)
+	DataMapper.setup(:default, CONFIG['db_driver'])
+else
+	DataMapper.setup(:default, 'sqlite::memory:')
+end
 
 # Fighter (ID) <- FighterMatch(Fighter ID, Match ID, Color) <- Match(ID, Victor, timestamp)
 class FighterMatch

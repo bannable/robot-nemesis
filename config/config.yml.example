@@ -1,0 +1,4 @@
+bot_name: SneakyBan
+oauth_token: OAUTHTOKENGOESHERE
+dev: false
+db_driver: postgres://user:pass@host/schema
