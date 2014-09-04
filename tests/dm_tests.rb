@@ -43,41 +43,6 @@ end
 
 include Test
 
-assert_nil Fighter.get(1)
-
-alpha = Fighter.create( :name => 'Alpha' )
-beta = Fighter.create( :name => 'Beta' )
-
-assert_not_nil alpha
-assert_not_nil beta
-assert_not_equal alpha, beta
-
-test = Fighter.first(:name => 'Alpha')
-
-assert_equal test, alpha
-
-test = Fighter::first_or_create('Charlie')
-assert_equal test.name, 'Charlie'
-test = Fighter::first_or_create('Alpha')
-assert_equal test.name, 'Alpha'
-assert_not_nil test.created_at
-
-alpha = Fighter::first_or_create('Charlie')
-beta = Fighter::first_or_create('Beta')
-match = Match.create(:victor => alpha)
-
-assert_not_nil match
-
-afm = FighterMatch.create(:fighter => alpha, :match => match, :color => 'red')
-bfm = FighterMatch.create(:fighter => beta, :match => match, :color => 'blue')
-
-assert_not_nil afm
-assert_not_nil bfm
-assert_equal bfm.fighter.name, 'Beta'
-assert_equal afm.fighter.name, 'Charlie'
-assert_equal beta.matches.first.victor.name, 'Charlie'
-
-
 assert_match PATTERN_NEW, "Bets are OPEN for Ultimat goku vs Shazam! (B Tier)  (matchmaking) www.saltybet.com"
 
 assert_not_nil PATTERN_NEW_SPLIT =~ "Bets are OPEN for Ultimat goku vs Shazam! (B Tier)  (matchmaking) www.saltybet.com"
@@ -105,11 +70,5 @@ assert_not_nil PATTERN_END =~ "Pentagon & black hole wins! Payouts to Team Red. 
 assert_not_nil PATTERN_END =~ "Orochi vega wins! Payouts to Team Red. 12 characters are left in the bracket!"
 assert_nil PATTERN_END =~ "Orochi vega wins! Payouts to Team Red. 1a2 characters are left in the bracket!"
 
-afm.destroy
-bfm.destroy
-match.destroy
-alpha.destroy
-beta.destroy
-charlie.destroy
 puts "All tests have passed. Continuing execution in 3 seconds..."
 sleep 3
