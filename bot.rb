@@ -13,6 +13,19 @@ if (DEVELOPMENT)
 	require './tests/dm_tests'
 end
 
+def get_mode(input)
+	case input
+	when 'more'
+		return 'mm'
+	when 'characters'
+		return 'to'
+	when 'exhibition'
+		return 'ex'
+	else
+		return 'mm'
+	end
+end
+
 
 # Create our first bot -- this one is our twitch interface
 scraper = Cinch::Bot.new do
@@ -38,18 +51,20 @@ scraper = Cinch::Bot.new do
 		if (PATTERN_NEW_SPLIT =~ m.message)
 			red = Fighter::find_or_create($1)
 			blue = Fighter::find_or_create($2)
-			puts red
-			puts blue
+			puts "Red: " << red.name
+			puts "Blue: " << blue.name
 			puts "Tier: #{$3}"
-			puts "Mode: #{$4}"
+			puts "Mode: " << get_mode($4)
 		end
 	end
 
 	on :message, PATTERN_START do |m|
 		return unless m.user == "waifu4u" && bot_ready
 		if (PATTERN_START_SPLIT =~ m.message)
-			puts "Red: #{$1} (#{$2})"
-			puts "Blue: #{$3} (#{$4})"
+			red = Fighter::find_or_create($1)
+			blue = Fighter::find_or_create($3)
+			puts "Red: " << red.name << " (#{$2})"
+			puts "Blue: " << blue.name << " (#{$4})"
 		end
 	end	
 
@@ -57,11 +72,13 @@ scraper = Cinch::Bot.new do
 		return unless m.user == "waifu4u" && bot_ready
 		if (PATTERN_END =~ m.message)
 			puts "Winner #{$1} (#{$2})"
-			puts "Current mode #{$4} changes in #{$3} matches"
+			puts "Current mode " << get_mode($4).upcase << " changes in #{$3} matches"
 		end
 	end
 
 	trap "SIGINT" do
+		puts "Total Fighters created: "
+		puts Fighter.count
 		scraper.quit
 	end
 end

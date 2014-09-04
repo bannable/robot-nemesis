@@ -1,7 +1,10 @@
+#TODO: For now, we're going to log everything
+DataMapper::Logger.new($stdout, :debug)
+
 if (DEVELOPMENT)
-	DataMapper.setup(:default, CONFIG['db_driver'])
-else
 	DataMapper.setup(:default, 'sqlite::memory:')
+else
+	DataMapper.setup(:default, CONFIG['db_driver'])
 end
 
 # Fighter (ID) <- FighterMatch(Fighter ID, Match ID, Color) <- Match(ID, Victor, timestamp)
