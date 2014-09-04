@@ -16,7 +16,7 @@ class Fighter
 	include DataMapper::Resource
 
 	property :id,		Serial
-	property :name,		String,		:required => true
+	property :name,		String,		:required => true, :unique => true
 	property :created_at,	DateTime,	:writer => :private
 	property :updated_at,	DateTime,	:writer => :private
 
@@ -42,18 +42,19 @@ class Match
 
 	property :id,		Serial,		:writer => :private
 	property :created_at,	DateTime,	:writer => :private
+	property :mode,		Integer
 	
 	has n, :results, 'FighterMatch'
 	has n, :fighters, :through => :results
 	belongs_to :victor, 'Fighter', :parent_key => [ :id ], :child_key => [ :victor_id ]
 
-	def self.setup(red_fighter, blue_fighter)
+	def self.setup(red_fighter, blue_fighter, mode)
 		red = Fighter::find_or_create(red_fighter)
 		blue = Fighter::find_or_create(blue_fighter)
-		match = Match.create()
-		bfm = FighterMatch.create(:fighter => blue, :match => match, :color => 'blue')
-		rfm = FighterMatch.create(:fighter => red, :match => match, :color => 'red')
-		return [ match, blue, red, bfm, rfm ]
+		match = Match.create(:mode => mode)
+		FighterMatch.create(:fighter => blue, :match => match, :color => 'blue')
+		FighterMatch.create(:fighter => red, :match => match, :color => 'red')
+		return match
 	end
 end
 

@@ -1,33 +1,59 @@
 require 'cinch'
 require 'data_mapper'
-require './config/config.rb'
+require 'json'
+require 'yaml'
 require './init/dm_setup'
 require './init/constants'
+require './init/salt'
 
 if (DEVELOPMENT)
 	require './tests/dm_tests'
 end
 
+CONFIG = YAML.load_file('config.yml') unless defined? CONFIG
+
 # Create our first bot -- this one is our twitch interface
 scraper = Cinch::Bot.new do
+	bot_ready = false
 	configure do |c|
-		c.nick = BOT_NAME
-		c.user = BOT_NAME
-		c.realname = BOT_NAME
+		c.nick = CONFIG['bot_name']
+		c.user = CONFIG['bot_name']
+		c.realname = CONFIG['bot_name']
 		c.server = "irc.twitch.tv"
 		c.channels = ["#saltybet"]
-		c.password = BOT_OAUTH_TOKEN 
+		c.password = CONFIG['oauth_token']
 	end
 
+	on :connect do
+		sleep 10
+		bot_ready = true
+		puts 'Bot is now ready for action.'
+	end
+
+
 	on :message, PATTERN_NEW do |m|
-		return unless m.user == "waifu4u"
-		if match = m.message.match(PATTERN_NEW_SPLIT)
-		       	#red, blue, tier, mode = match[1], match[2], match[3], match[4]
-			red, blue, tier, mode = match
-			debug "Red: #{red}"
-			debug "Blue: #{blue}"
-			debug "Tier: #{tier}"
-			debug "Mode: #{mode}"
+		return unless m.user == "waifu4u" && bot_ready
+		if (PATTERN_NEW_SPLIT =~ m.message)
+			puts "Red: #{$1}"
+			puts "Blue: #{$2}"
+			puts "Tier: #{$3}"
+			puts "Mode: #{$4}"
+		end
+	end
+
+	on :message, PATTERN_START do |m|
+		return unless m.user == "waifu4u" && bot_ready
+		if (PATTERN_START_SPLIT =~ m.message)
+			puts "Red: #{$1} (#{$2})"
+			puts "Blue: #{$3} (#{$4})"
+		end
+	end	
+
+	on :message, PATTERN_END do |m|
+		return unless m.user == "waifu4u" && bot_ready
+		if (PATTERN_END =~ m.message)
+			puts "Winner #{$1} (#{$2})"
+			puts "Current mode #{$4} changes in #{$3} matches"
 		end
 	end
 
