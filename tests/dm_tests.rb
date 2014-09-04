@@ -56,14 +56,14 @@ test = Fighter.first(:name => 'Alpha')
 
 assert_equal test, alpha
 
-test = Fighter::find_or_create('Charlie')
+test = Fighter::first_or_create('Charlie')
 assert_equal test.name, 'Charlie'
-test = Fighter::find_or_create('Alpha')
+test = Fighter::first_or_create('Alpha')
 assert_equal test.name, 'Alpha'
 assert_not_nil test.created_at
 
-alpha = Fighter::find_or_create('Charlie')
-beta = Fighter::find_or_create('Beta')
+alpha = Fighter::first_or_create('Charlie')
+beta = Fighter::first_or_create('Beta')
 match = Match.create(:victor => alpha)
 
 assert_not_nil match

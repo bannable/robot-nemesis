@@ -3,7 +3,6 @@ require 'data_mapper'
 require 'json'
 require 'yaml'
 require './init/constants'
-require './init/salt'
 
 CONFIG = YAML.load_file('config/config.yml') unless defined? CONFIG
 DEVELOPMENT = CONFIG['dev']
@@ -49,8 +48,8 @@ scraper = Cinch::Bot.new do
 	on :message, PATTERN_NEW do |m|
 		return unless m.user == "waifu4u" && bot_ready
 		if (PATTERN_NEW_SPLIT =~ m.message)
-			red = Fighter::find_or_create($1)
-			blue = Fighter::find_or_create($2)
+			red = Fighter::first_or_create($1)
+			blue = Fighter::first_or_create($2)
 			puts "Red: " << red.name
 			puts "Blue: " << blue.name
 			puts "Tier: #{$3}"
@@ -61,8 +60,8 @@ scraper = Cinch::Bot.new do
 	on :message, PATTERN_START do |m|
 		return unless m.user == "waifu4u" && bot_ready
 		if (PATTERN_START_SPLIT =~ m.message)
-			red = Fighter::find_or_create($1)
-			blue = Fighter::find_or_create($3)
+			red = Fighter::first_or_create($1)
+			blue = Fighter::first_or_create($3)
 			puts "Red: " << red.name << " (#{$2})"
 			puts "Blue: " << blue.name << " (#{$4})"
 		end

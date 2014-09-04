@@ -30,18 +30,6 @@ class Fighter
 	has n, :results, 'FighterMatch'
 	has n, :matches, :through => :results
 	has n, :victories, 'Match', :parent_key => [ :id ], :child_key => [ :victor_id ]
-
-	def self.find_or_create(fname)
-		test = Fighter.first(:name => fname)
-		if (nil == test)
-			new_fighter = Fighter.create(:name => fname)
-			return new_fighter
-		else
-			return test
-		end
-	end
-			
-
 end
 
 class Match
@@ -56,8 +44,8 @@ class Match
 	belongs_to :victor, 'Fighter', :parent_key => [ :id ], :child_key => [ :victor_id ]
 
 	def self.setup(red_fighter, blue_fighter, mode)
-		red = Fighter::find_or_create(red_fighter)
-		blue = Fighter::find_or_create(blue_fighter)
+		red = Fighter::first_or_create(red_fighter)
+		blue = Fighter::first_or_create(blue_fighter)
 		match = Match.create(:mode => mode)
 		FighterMatch.create(:fighter => blue, :match => match, :color => 'blue')
 		FighterMatch.create(:fighter => red, :match => match, :color => 'red')
