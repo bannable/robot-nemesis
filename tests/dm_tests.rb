@@ -105,6 +105,11 @@ assert_not_nil PATTERN_END =~ "Pentagon & black hole wins! Payouts to Team Red. 
 assert_not_nil PATTERN_END =~ "Orochi vega wins! Payouts to Team Red. 12 characters are left in the bracket!"
 assert_nil PATTERN_END =~ "Orochi vega wins! Payouts to Team Red. 1a2 characters are left in the bracket!"
 
-
+afm.destroy
+bfm.destroy
+match.destroy
+alpha.destroy
+beta.destroy
+charlie.destroy
 puts "All tests have passed. Continuing execution in 3 seconds..."
 sleep 3
