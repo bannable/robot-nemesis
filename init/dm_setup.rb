@@ -1,8 +1,9 @@
 #TODO: For now, we're going to log everything
-DataMapper::Logger.new($stdout, :debug)
-
-if (DEVELOPMENT && CONFIG['dev_db'])
-	DataMapper.setup(:default, 'sqlite:development.db')
+if (DEVELOPMENT)
+	DataMapper::Logger.new($stdout, :debug)
+	if (CONFIG['dev_db'])
+		DataMapper.setup(:default, 'sqlite:development.db')
+	end
 else
 	DataMapper.setup(:default, CONFIG['db_driver'])
 end
@@ -12,6 +13,7 @@ class FighterMatch
 	include DataMapper::Resource
 
 	property :color,	String	
+	property :bets,		Integer
 	
 	belongs_to :fighter,	'Fighter',	:key => true
 	belongs_to :match,	'Match',	:key => true
