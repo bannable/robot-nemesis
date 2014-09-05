@@ -48,8 +48,6 @@ def match_cleanup(messy = false)
 	if messy
 		if ($active_rfm); $active_rfm.destroy; end
 		if ($active_bfm); $active_bfm.destroy; end
-		if ($active_red); $active_red.destroy; end
-		if ($active_blue); $active_blue.destroy; end
 		if ($active_match); $active_match.destroy; end
 	end
 
