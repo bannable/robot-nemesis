@@ -30,6 +30,9 @@ class Fighter
 	property :name,		String,		:required => true, :unique => true
 	property :created_at,	DateTime,	:writer => :private
 	property :updated_at,	DateTime,	:writer => :private
+	property :elo,		Integer
+	property :tier,		String,		:length => 3
+	property :comment,	Text
 
 	has n, :results, 'FighterMatch'
 	has n, :matches, :through => :results
