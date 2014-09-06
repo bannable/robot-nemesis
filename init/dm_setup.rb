@@ -12,7 +12,7 @@ end
 class FighterMatch
 	include DataMapper::Resource
 
-	property :color,	String	
+	property :color,	String,		:length => 10
 	property :bets,		Integer
 	
 	belongs_to :fighter,	'Fighter',	:key => true
@@ -39,11 +39,11 @@ class Match
 
 	property :id,		Serial,		:writer => :private
 	property :created_at,	DateTime,	:writer => :private
-	property :mode,		Integer
+	property :mode,		String,		:length => 15
 	
 	has n, :results, 'FighterMatch'
 	has n, :fighters, :through => :results
-	belongs_to :victor, 'Fighter', :parent_key => [ :id ], :child_key => [ :victor_id ]
+	belongs_to :victor, 'Fighter' 
 
 	def self.setup(red_fighter, blue_fighter, mode)
 		red = Fighter::first_or_create(red_fighter)

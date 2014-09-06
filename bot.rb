@@ -15,83 +15,77 @@ end
 $active_mode	= 'unknown'
 $active_red	= nil
 $active_blue	= nil
-$active_match	= nil
-$active_rfm	= nil
-$active_bfm	= nil
-$active_locked	= false
+$active_match	= false
+$active_rfm_bet	= nil
+$active_bfm_bet	= nil
 
 def update_mode(input)
 	case input
 	when 'matchmaking'
 		$active_mode = 'mm'
-	when 'characters'
+	when 'characters', 'tournament'
 		$active_mode = 'to'
-	when 'exhibition'
-		$active_mode = 'ex'
 	else
-		$active_mode = 'unknown'
+		$active_mode = 'ex'
 	end
 	if (DEVELOPMENT)
-	       	debug "Game mode updated to: " << $active_mode
+	       	warn "Game mode updated to: " << $active_mode
 	end
 end
 
-def update_active(red, blue, match, rfm, bfm)
+def update_active(red, blue, match, rfm_bet, bfm_bet)
 	$active_red = red
 	$active_blue = blue
 	$active_match = match
-	$active_rfm = rfm
-	$active_bfm = bfm
+	$active_rfm_bet = rfm_bet
+	$active_bfm_bet = bfm_bet
 end
 
-def match_cleanup(messy = false)
-	if messy
-		if ($active_rfm); $active_rfm.destroy; end
-		if ($active_bfm); $active_bfm.destroy; end
-		if ($active_match); $active_match.destroy; end
-	end
-
+def match_cleanup
 	$active_red = nil
 	$active_blue = nil
 	$active_match = nil
-	$active_rfm = nil
-	$active_bfm = nil
+	$active_rfm_bet = nil
+	$active_bfm_bet = nil
 end
 
 def start_bets(left, right)
 	debug "Preparing a match between (" << left << ") and (" << right << ")"
 	red = Fighter::first_or_create(:name => left)
 	blue = Fighter::first_or_create(:name => right)
-	match = Match.new
-	match.mode = $active_mode
-	rfm = FighterMatch.new
-	rfm.attributes = { :fighter => red, :match => match, :color => 'red' }
-	bfm = FighterMatch.new
-	bfm.attributes = { :fighter => blue, :match => match, :color => 'blue' }
-
-	update_active(red, blue, match, rfm, bfm)
+	update_active(red, blue, true, nil, nil)
 end
 
 def start_match(red, red_bet, blue, blue_bet)
 	if (red != nil && blue != nil  && (red == $active_red && blue == $active_blue))
-		$active_rfm.bets = red_bet.delete(",").to_i
-		$active_bfm.bets = blue_bet.delete(",").to_i
+		$active_rfm_bet = red_bet.delete(",").to_i
+		$active_bfm_bet = blue_bet.delete(",").to_i
 		info "Bets for active match set. Let's get ready to rumble."
 	else
-		warn "Match began that we did not know about: #{red.name} (#{red_bet}) vs #{blue.name} (#{blue_bet})"
-		match_cleanup(true)
+		debug "Match began that we did not know about: #{red.name} (#{red_bet}) vs #{blue.name} (#{blue_bet})"
+		match_cleanup
 		return
 	end
 end
 
-def match_end(victor)
-	if ($active_red != victor && $active_blue != victor)
-		match_cleanup(true)
-		return
-	else
+def match_end(winner)
+	if ($active_match)
 		if ($active_mode == 'mm' || $active_mode == 'to')
-			$active_match.victor = victor
-			$active_match.save
+			match = Match.new
+			match.mode = $active_mode
+			if ($active_red.name == winner)
+				match.victor = $active_red
+			else
+				match.victor = $active_blue
+			end
+			match.save
+			rfm = FighterMatch.create( :fighter => $active_red, :match => match, :bets => $active_rfm_bet, :color => 'red' )
+			bfm = FighterMatch.create( :fighter => $active_blue, :match => match, :bets => $active_bfm_bet, :color => 'blue' )
+			fighter = Fighter.first(:name => winner)
+			debug "Match is over, testing cleanup..."
+			puts match.victor.name
+			m = Match.first( :victor => fighter )
+			puts m.victor.name
 		end
 		match_cleanup
 	end
@@ -111,9 +105,7 @@ scraper = Cinch::Bot.new do
 	end
 
 	on :connect do
-		sleep 10
 		bot_ready = true
-		info 'Bot is now ready for action.'
 	end
 
 	on :message, PATTERN_NEW do |m|
@@ -126,14 +118,8 @@ scraper = Cinch::Bot.new do
 				# Do not create entries from Exhibition fights
 				debug "Red: " << $1
 				debug "Blue: " << $2
-			elsif ($active_mode == 'unknown')
-				error "How did we get here?"
-			       	puts m
-				exit
 			else
-				if ($active_match)
-					match_cleanup(true)
-				end
+				match_cleanup
 				start_bets($1, $2)
 			end
 			debug "Mode: " << $active_mode.upcase << " (Tier: #{$3})"
@@ -150,7 +136,7 @@ scraper = Cinch::Bot.new do
 				debug "Exhibition match; recording no data."
 				debug "Red: " << $1 << " (#{$2})"
 				debug "Blue: " << $3 << " (#{$4})"
-			elsif ($active_mode != 'unknown')
+			else
 				debug "Not exhibition match..."
 				red = Fighter::first_or_create(:name => $1)
 				blue = Fighter::first_or_create(:name => $3)
@@ -176,8 +162,9 @@ scraper = Cinch::Bot.new do
 	end
 
 	trap "SIGINT" do
-		puts "Total Fighters created: "
 		puts Fighter.count
+		puts Match.count
+		match_cleanup
 		scraper.quit
 	end
 end
