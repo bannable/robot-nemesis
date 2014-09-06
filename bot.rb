@@ -8,8 +8,6 @@ $active_match	= false
 $active_rfm_bet	= nil
 $active_bfm_bet	= nil
 
-exit
-
 def update_mode(input)
 	case input
 	when 'matchmaking'
