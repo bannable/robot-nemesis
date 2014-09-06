@@ -71,3 +71,5 @@ assert_not_nil PATTERN_END =~ "Orochi vega wins! Payouts to Team Red. 12 charact
 assert_nil PATTERN_END =~ "Orochi vega wins! Payouts to Team Red. 1a2 characters are left in the bracket!"
 
 puts "All tests have passed. Continuing execution in 3 seconds..."
+
+

@@ -1,16 +1,5 @@
+require './models/setup'
 require 'cinch'
-require 'data_mapper'
-require 'json'
-require 'yaml'
-require './init/constants'
-
-CONFIG = YAML.load_file('config/config.yml') unless defined? CONFIG
-DEVELOPMENT = CONFIG['dev']
-require './init/dm_setup'
-
-if (DEVELOPMENT)
-	require './tests/dm_tests'
-end
 
 $active_mode	= 'unknown'
 $active_red	= nil
@@ -18,6 +7,8 @@ $active_blue	= nil
 $active_match	= false
 $active_rfm_bet	= nil
 $active_bfm_bet	= nil
+
+exit
 
 def update_mode(input)
 	case input
@@ -79,8 +70,8 @@ def match_end(winner)
 				match.victor = $active_blue
 			end
 			match.save
-			rfm = FighterMatch.create( :fighter => $active_red, :match => match, :bets => $active_rfm_bet, :color => 'red' )
-			bfm = FighterMatch.create( :fighter => $active_blue, :match => match, :bets => $active_bfm_bet, :color => 'blue' )
+			FighterMatch.create( :fighter => $active_red, :match => match, :bets => $active_rfm_bet, :color => 'red' )
+			FighterMatch.create( :fighter => $active_blue, :match => match, :bets => $active_bfm_bet, :color => 'blue' )
 			fighter = Fighter.first(:name => winner)
 			debug "Match is over, testing cleanup..."
 			puts match.victor.name
