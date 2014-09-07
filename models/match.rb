@@ -37,9 +37,11 @@ class Match
 		end
 		match.save
 
-		puts "RATINGS UPDATED"
-		puts "Blue: #{blue.rating} --> #{blue_rating.new_rating}"
-		puts "Red: #{red.rating} --> #{red_rating.new_rating}"
+		if (DEVELOPMENT)
+			puts "RATINGS UPDATED"
+			puts "Blue: #{blue.rating} --> #{blue_rating.new_rating}"
+			puts "Red: #{red.rating} --> #{red_rating.new_rating}"
+		end
 		blue.update_rating(blue_rating.new_rating)
 		red.update_rating(red_rating.new_rating)
 	end
