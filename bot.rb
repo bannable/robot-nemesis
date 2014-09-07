@@ -1,4 +1,5 @@
 require './models/setup'
+require './web'
 require 'cinch'
 
 $active_mode		= 'unknown'
@@ -94,10 +95,12 @@ def match_end(winner)
 	end
 end
 
-
 # Create our first bot -- this one is our twitch interface
-scraper = Cinch::Bot.new do
-	bot_ready = false
+$scraper = Cinch::Bot.new do
+	if (DEVELOPMENT == false)
+		loggers.level = :warn
+	end
+
 	configure do |c|
 		c.nick = CONFIG['bot_name']
 		c.user = CONFIG['bot_name']
@@ -166,11 +169,11 @@ scraper = Cinch::Bot.new do
 		puts Fighter.count
 		puts Match.count
 		match_cleanup
-		scraper.quit
+		quit
 	end
 end
 
-scraper.start
-if (DEVELOPMENT == false)
-	scraper.loggers.level = :warn
+# We're not thread safe yet but whatever.
+Thread.new do
+	$scraper.start
 end

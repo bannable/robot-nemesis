@@ -1,0 +1,14 @@
+<table align="center">
+<% if ($active_match) %>
+	<tr>
+		<td><%=$active_red.name%></td>
+		<td><%=$rating_red.expected%></td>
+	</tr>
+	<tr>
+		<td><%=$active_blue.name%></td>
+		<td><%=$rating_blue.expected%></td>
+	</tr>
+<% else %>
+		No active match
+<% end %>
+</table>

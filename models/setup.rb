@@ -11,7 +11,6 @@ require './models/fighter'
 require './models/match'
 require './models/fighter_match'
 
-
 # Fighter (ID) <- FighterMatch(Fighter ID, Match ID, Color) <- Match(ID, Victor, timestamp)
 DataMapper.finalize.auto_upgrade!
 
