@@ -1,5 +1,11 @@
 class Rating
 	# Based on iain's elo gem
+	
+	def initialize(attributes = {})
+		attributes.each do |key, value|
+			instance_variable_set("@#{key}", value)
+		end
+	end
 
 	# Elo rating of the opponent. Not adjusted.
 	attr_reader :opp_rating
@@ -7,6 +13,8 @@ class Rating
 	attr_reader :old_rating
 	# k-factor for our Fighter
 	attr_reader :k_factor
+	# Result from the perspective of ourselves
+	attr_reader :result
 
 	def result
 		raise "Invalid result: #{@result.inspect}" unless valid_result?
@@ -15,6 +23,18 @@ class Rating
 
 	def valid_result?
 		(0..1).include? @result
+	end
+
+	def win
+		@result = 1.0
+	end
+
+	def draw
+		@result = 0.5
+	end
+
+	def lose
+		@result = 0.0
 	end
 
 	def expected
@@ -28,4 +48,5 @@ class Rating
 	def new_rating
 		(old_rating.to_f + change).to_i
 	end
+
 end

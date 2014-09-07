@@ -1,12 +1,14 @@
 require './models/setup'
 require 'cinch'
 
-$active_mode	= 'unknown'
-$active_red	= nil
-$active_blue	= nil
-$active_match	= false
-$active_rfm_bet	= nil
-$active_bfm_bet	= nil
+$active_mode		= 'unknown'
+$active_red		= nil
+$active_blue		= nil
+$active_match		= false
+$active_red_bet		= nil
+$active_blue_bet	= nil
+$rating_red		= nil
+$rating_blue		= nil
 
 def update_mode(input)
 	case input
@@ -17,64 +19,74 @@ def update_mode(input)
 	else
 		$active_mode = 'ex'
 	end
-	if (DEVELOPMENT)
-	       	warn "Game mode updated to: " << $active_mode
-	end
+	debug "Game mode updated to: " << $active_mode
 end
 
-def update_active(red, blue, match, rfm_bet, bfm_bet)
-	$active_red = red
-	$active_blue = blue
+def update_active(blue, red, match, blue_bet, red_bet)
+	$active_blue ||= blue
+	$active_red ||= red
 	$active_match = match
-	$active_rfm_bet = rfm_bet
-	$active_bfm_bet = bfm_bet
+	$active_blue_bet ||= blue_bet
+	$active_red_bet ||= red_bet
+	$rating_blue = Rating.new(
+		:old_rating => blue.rating,
+		:opp_rating => red.rating,
+		:k_factor => blue.k_factor
+	)
+	$rating_red = Rating.new(
+		:old_rating => red.rating,
+		:opp_rating => blue.rating,
+		:k_factor => red.k_factor
+	)
+	if (DEVELOPMENT)
+		puts $rating_blue.inspect
+		puts $rating_red.inspect
+		info "BLUE ESTIMATE: (#{blue.rating}) #{$rating_blue.expected}"
+		info "RED ESTIMATE: (#{red.rating}) #{$rating_red.expected}"
+	end
 end
 
 def match_cleanup
 	$active_red = nil
 	$active_blue = nil
-	$active_match = nil
-	$active_rfm_bet = nil
-	$active_bfm_bet = nil
+	$active_match = false
+	$active_red_bet = nil
+	$active_blue_bet = nil
+	$rating_red = nil
+	$rating_blue = nil
 end
 
 def start_bets(left, right)
 	debug "Preparing a match between (" << left << ") and (" << right << ")"
 	red = Fighter::first_or_create(:name => left)
 	blue = Fighter::first_or_create(:name => right)
-	update_active(red, blue, true, nil, nil)
+	update_active(blue, red, true, nil, nil)
 end
 
 def start_match(red, red_bet, blue, blue_bet)
 	if (red != nil && blue != nil  && (red == $active_red && blue == $active_blue))
-		$active_rfm_bet = red_bet.delete(",").to_i
-		$active_bfm_bet = blue_bet.delete(",").to_i
-		info "Bets for active match set. Let's get ready to rumble."
+		$active_red_bet = red_bet.delete(",").to_i
+		$active_blue_bet = blue_bet.delete(",").to_i
+		info "Bets for match set. Let's get ready to rumble."
 	else
 		debug "Match began that we did not know about: #{red.name} (#{red_bet}) vs #{blue.name} (#{blue_bet})"
 		match_cleanup
-		return
 	end
 end
 
 def match_end(winner)
 	if ($active_match)
 		if ($active_mode == 'mm' || $active_mode == 'to')
-			match = Match.new
-			match.mode = $active_mode
-			if ($active_red.name == winner)
-				match.victor = $active_red
-			else
-				match.victor = $active_blue
-			end
-			match.save
-			FighterMatch.create( :fighter => $active_red, :match => match, :bets => $active_rfm_bet, :color => 'red' )
-			FighterMatch.create( :fighter => $active_blue, :match => match, :bets => $active_bfm_bet, :color => 'blue' )
-			fighter = Fighter.first(:name => winner)
-			debug "Match is over, testing cleanup..."
-			puts match.victor.name
-			m = Match.first( :victor => fighter )
-			puts m.victor.name
+			Match::play(
+				$active_blue,
+				$active_red,
+				$active_blue_bet,
+				$active_red_bet,
+				$rating_blue,
+				$rating_red,
+				$active_mode,
+				winner
+			)
 		end
 		match_cleanup
 	end
@@ -117,9 +129,7 @@ scraper = Cinch::Bot.new do
 
 	on :message, PATTERN_START do |m|
 		if (m.user == "waifu4u" && PATTERN_START_SPLIT =~ m.message)
-			if (DEVELOPMENT)
-			       	debug "Game mode is currently: " << $active_mode.upcase
-			end
+			debug "Game mode is currently: " << $active_mode.upcase
 			if ($active_mode == 'ex')
 				# Do not create entries from Exhibition fights
 				debug "Exhibition match; recording no data."
@@ -145,7 +155,7 @@ scraper = Cinch::Bot.new do
 				learn = 'exhibition'
 			end
 			update_mode(learn)
-			debug "Current mode " << $active_mode.upcase << " changes in #{$3} matches"
+			info "Current mode " << $active_mode.upcase << " changes in #{$3} matches"
 			match_end($1)
 		end
 	end
@@ -159,3 +169,6 @@ scraper = Cinch::Bot.new do
 end
 
 scraper.start
+if (DEVELOPMENT == false)
+	scraper.loggers.level = :warn
+end
