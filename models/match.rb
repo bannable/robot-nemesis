@@ -27,32 +27,27 @@ class Match
 			match.victor = red
 			blue_rating.lose
 			red_rating.win
+			loser = blue
+			win_rat = red_rating
+			lose_rat = blue_rating
 		elsif (blue.name == winner)
 			match.victor = blue
 			blue_rating.win
 			red_rating.lose
+			loser = red
+			win_rat = blue_rating
+			lose_rat = red_rating
 		else
+			loser = nil
 			blue_rating.draw
 			red_rating.draw
 		end
 		match.save
 
-		if (DEVELOPMENT)
-			puts "RATINGS UPDATED"
-			puts "Blue: #{blue.rating} --> #{blue_rating.new_rating}"
-			puts "Red: #{red.rating} --> #{red_rating.new_rating}"
+		match.victor.update_rating(win_rat.new_rating)
+		if (!match.victor.provisional?)
+			loser.update_rating(lose_rat.new_rating)
 		end
-		blue.update_rating(blue_rating.new_rating)
-		red.update_rating(red_rating.new_rating)
-	end
-
-	def self.setup(red_fighter, blue_fighter, mode)
-		red = Fighter::first_or_create(red_fighter)
-		blue = Fighter::first_or_create(blue_fighter)
-		match = Match.create(:mode => mode)
-		FighterMatch.create(:fighter => blue, :match => match, :color => 'blue')
-		FighterMatch.create(:fighter => red, :match => match, :color => 'red')
-		return match
 	end
 end
 

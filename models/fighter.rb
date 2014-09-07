@@ -14,6 +14,14 @@ class Fighter
 	has n, :matches, :through => :results
 	has n, :victories, 'Match', :parent_key => [ :id ], :child_key => [ :victor_id ]
 
+	def provisional?
+		if (@match_count < 7)
+			return true
+		else
+			return false
+		end
+	end
+
 	def k_factor
 		if (@match_count < 10)
 			return 100
