@@ -15,7 +15,7 @@ class Fighter
 	has n, :victories, 'Match', :parent_key => [ :id ], :child_key => [ :victor_id ]
 
 	def provisional?
-		if (@match_count < 7)
+		if (@match_count < 10)
 			return true
 		else
 			return false
