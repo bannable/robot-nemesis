@@ -2,7 +2,6 @@ require './models/setup.rb'
 
 def parse(line)
 	if /^(?<mred>.*?) - \$(?<red_bet>[\d]+), (?<mblue>.*?) - \$(?<blue_bet>[\d]++)\s+(?<winner>.*?)\s+\d{1,2}:/ =~ line
-		puts "#{mred},#{red_bet},#{mblue},#{blue_bet},#{winner}"
 		blue = Fighter::first_or_create(:name => mblue)
 		red = Fighter::first_or_create(:name => mred)
 		r_blue = Rating.new(
@@ -27,7 +26,7 @@ File.open('./tools/data') do |f|
 	f.each_line do |line|
 		parse line
 		it += 1
-		if (it % 10 == 0)
+		if (it % 50 == 0)
 			puts "#{it} matches imported..."
 		end
 	end
