@@ -38,11 +38,13 @@ def update_active(red, blue, match, red_bet, blue_bet)
 		:opp_rating => blue.rating,
 		:k_factor => red.k_factor
 	)
+
+	warn "BLUE ESTIMATE: (#{blue.rating}) #{$rating_blue.expected}"
+	warn "RED ESTIMATE: (#{red.rating}) #{$rating_red.expected}"
+
 	if (DEVELOPMENT)
 		puts $rating_blue.inspect
 		puts $rating_red.inspect
-		info "BLUE ESTIMATE: (#{blue.rating}) #{$rating_blue.expected}"
-		info "RED ESTIMATE: (#{red.rating}) #{$rating_red.expected}"
 	end
 end
 
