@@ -27,26 +27,23 @@ class Match
 			match.victor = red
 			blue_rating.lose
 			red_rating.win
-			loser = blue
-			win_rat = red_rating
-			lose_rat = blue_rating
 		elsif (blue.name == winner)
 			match.victor = blue
 			blue_rating.win
 			red_rating.lose
-			loser = red
-			win_rat = blue_rating
-			lose_rat = red_rating
 		else
-			loser = nil
 			blue_rating.draw
 			red_rating.draw
 		end
 		match.save
 
-		match.victor.update_rating(win_rat.new_rating)
-		if (!match.victor.provisional?)
-			loser.update_rating(lose_rat.new_rating)
+		if (red.provisional? && !blue.provisional?)
+			red.update_rating(red_rating.new_rating)
+		elsif (!red.provisional? && blue.provisional?)
+			blue.update_rating(blue_rating.new_rating)
+		else
+			red.update_rating(red_rating.new_rating)
+			blue.update_rating(blue_rating.new_rating)
 		end
 	end
 end
