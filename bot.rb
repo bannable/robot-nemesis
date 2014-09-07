@@ -22,7 +22,7 @@ def update_mode(input)
 	debug "Game mode updated to: " << $active_mode
 end
 
-def update_active(blue, red, match, blue_bet, red_bet)
+def update_active(red, blue, match, red_bet, blue_bet)
 	$active_blue ||= blue
 	$active_red ||= red
 	$active_match = match
@@ -60,7 +60,7 @@ def start_bets(left, right)
 	debug "Preparing a match between (" << left << ") and (" << right << ")"
 	red = Fighter::first_or_create(:name => left)
 	blue = Fighter::first_or_create(:name => right)
-	update_active(blue, red, true, nil, nil)
+	update_active(red, blue, true, nil, nil)
 end
 
 def start_match(red, red_bet, blue, blue_bet)

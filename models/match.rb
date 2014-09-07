@@ -9,7 +9,7 @@ class Match
 	has n, :fighters, :through => :results
 	belongs_to :victor, 'Fighter' 
 
-	def self.play(blue, red, blue_bet, red_bet, blue_rating, red_rating, mode, winner = nil)
+	def self.play(red, blue, red_bet, blue_bet, red_rating, blue_rating, mode, winner = nil)
 		match = Match.new(:mode => mode)
 		FighterMatch.create(
 			:fighter => blue,
