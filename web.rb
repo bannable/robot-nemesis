@@ -6,6 +6,7 @@ require 'rack-flash'
 SITE_TITLE = "Salts"
 SITE_DESCRIPTION = "The Salt Must Flow"
 
+set :session_secret, CONFIG['session_secret']
 enable :sessions
 
 set :port, CONFIG['port']
