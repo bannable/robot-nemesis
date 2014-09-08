@@ -10,11 +10,6 @@ enable :sessions
 
 set :port, CONFIG['port']
 set :bind, CONFIG['bind']
-if (DEVELOPMENT)
-	set :environment, :development
-else
-	set :environment, :production
-end
 set :run, true
 
 use Rack::Flash, :sweep => true
