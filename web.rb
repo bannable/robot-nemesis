@@ -15,5 +15,9 @@ set :run, true
 use Rack::Flash, :sweep => true
 
 get '/' do
-	erb :home
+	if ($active_match)
+		erb :home_inactive
+	else
+		erb :home_active
+	end
 end

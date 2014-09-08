@@ -4,6 +4,7 @@ class Match
 	property :id,		Serial,		:writer => :private
 	property :created_at,	DateTime,	:writer => :private
 	property :mode,		String,		:length => 15
+	property :correct,	Boolean
 	
 	has n, :results, 'FighterMatch'
 	has n, :fighters, :through => :results
@@ -16,18 +17,22 @@ class Match
 			:match => match,
 			:color => 'blue',
 			:rating => red_rating.old_rating,
-			:bets => blue_bet)
+			:bets => blue_bet
+		)
 		FighterMatch.create(
 			:fighter => red,
 			:match => match,
 			:color => 'red',
 			:rating => red_rating.old_rating,
-			:bets => red_bet)
+			:bets => red_bet
+		)
 		if (red.name == winner)
+			match.correct = red_rating.expected > blue_rating.expected ? true : false
 			match.victor = red
 			blue_rating.lose
 			red_rating.win
 		elsif (blue.name == winner)
+			match.correct = red_rating.expected > blue_rating.expected ? false: true
 			match.victor = blue
 			blue_rating.win
 			red_rating.lose
