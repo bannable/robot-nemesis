@@ -1,12 +1,21 @@
 <table align="center">
 <% if ($active_match) %>
 	<tr>
+		<th>Fighter</th>
+		<th>Expected</th>
+		<th>Matches</th>
+		<th>Provisional?</th>
+	<tr>
 		<td><%=$active_red.name%></td>
 		<td><%=$rating_red.expected%></td>
+		<td><%=$active_red.matches.count%></td>
+		<td><%=$active_red.provisional?%></td>
 	</tr>
 	<tr>
 		<td><%=$active_blue.name%></td>
 		<td><%=$rating_blue.expected%></td>
+		<td><%=$active_blue.matches.count%></td>
+		<td><%=$active_blue.provisional?%></td>
 	</tr>
 <% else %>
 		No active match
