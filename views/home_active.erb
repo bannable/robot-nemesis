@@ -1,0 +1,22 @@
+<table align="center">
+	<tr>
+		<th>Fighter</th>
+		<th>Rating</th>
+		<th>Expected</th>
+		<th>Matches</th>
+		<th>Provisional?</th>
+	<tr>
+		<td><%=$active_red.name%></td>
+		<td><%=$active_red.rating%></td>
+		<td><%=$rating_red.expected%></td>
+		<td><%=$active_red.matches.all.count%></td>
+		<td><%=$active_red.provisional?%></td>
+	</tr>
+	<tr>
+		<td><%=$active_blue.name%></td>
+		<td><%=$active_blue.rating%></td>
+		<td><%=$rating_blue.expected%></td>
+		<td><%=$active_blue.matches.all.count%></td>
+		<td><%=$active_blue.provisional?%></td>
+	</tr>
+</table>
