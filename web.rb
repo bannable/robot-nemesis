@@ -17,8 +17,8 @@ use Rack::Flash, :sweep => true
 
 get '/' do
 	if ($active_match)
-		erb :home_inactive
-	else
 		erb :home_active
+	else
+		erb :home_inactive
 	end
 end
