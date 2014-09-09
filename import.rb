@@ -33,4 +33,4 @@ File.open('./tools/data') do |f|
 end
 
 puts "Finished."
-puts "#{Fighter.count} fighters in #{Match.count} matches imported."
+puts "#{Fighter.count} fighters in #{Match.count} (#{FighterMatch.count}) matches imported."
