@@ -11,36 +11,59 @@ class Match
 	belongs_to :victor, 'Fighter' 
 
 	def self.play(red, blue, red_bet, blue_bet, red_rating, blue_rating, mode, winner = nil)
+		if (DEVELOPMENT)
+			puts "RED OLD MATCH COUNT: #{red.matches.count}"
+		end
 		match = Match.new(:mode => mode)
-		FighterMatch.create(
+		if (red.name == winner)
+			match.correct = close_guess(red_rating.expected, blue_rating.expected)
+			match.victor = red
+			blue_rating.lose
+			red_rating.win
+		elsif (blue.name == winner)
+			match.correct = close_guess(blue_rating.expected, red_rating.expected)
+			match.victor = blue
+			blue_rating.win
+			red_rating.lose
+		else
+			match.correct = close_guess(red_rating.expected, blue_rating.expected)
+			blue_rating.draw
+			red_rating.draw
+		end
+		match.save
+		
+		if (DEVELOPMENT)
+			puts "CREATING NEW MATCH: #{match.saved?}"
+			puts match.inspect
+		end
+
+		bfm = FighterMatch.new
+		bfm.attributes = {
 			:fighter => blue,
 			:match => match,
 			:color => 'blue',
-			:rating => red_rating.old_rating,
+			:rating => blue_rating.old_rating,
 			:bets => blue_bet
-		)
-		FighterMatch.create(
+		}
+		rfm = FighterMatch.new
+		rfm.attributes = { 
 			:fighter => red,
 			:match => match,
 			:color => 'red',
 			:rating => red_rating.old_rating,
 			:bets => red_bet
-		)
-		if (red.name == winner)
-			match.correct = red_rating.expected > blue_rating.expected ? true : false
-			match.victor = red
-			blue_rating.lose
-			red_rating.win
-		elsif (blue.name == winner)
-			match.correct = red_rating.expected > blue_rating.expected ? false: true
-			match.victor = blue
-			blue_rating.win
-			red_rating.lose
-		else
-			blue_rating.draw
-			red_rating.draw
+		}
+
+		bfm.save
+		rfm.save
+
+		if (DEVELOPMENT)
+			puts "CREATING NEW RFM: #{rfm.saved?}"
+			puts rfm.inspect
+			puts "CREATING NEW BFM: #{bfm.saved?}"
+			puts bfm.inspect
+			puts "RED NEW MATCH COUNT: #{red.matches.count}"
 		end
-		match.save
 
 		if (red.provisional? && !blue.provisional?)
 			red.update_rating(red_rating.new_rating)
