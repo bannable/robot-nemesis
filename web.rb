@@ -9,6 +9,10 @@ SITE_DESCRIPTION = "The Salt Must Flow"
 set :session_secret, CONFIG['session_secret']
 enable :sessions
 
+if (!DEVELOPMENT)
+	disable :logging
+end
+
 set :port, CONFIG['port']
 set :bind, CONFIG['bind']
 set :run, true
