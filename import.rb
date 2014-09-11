@@ -34,5 +34,5 @@ File.open('./tools/data') do |f|
 end
 fin = Time.now
 
-puts "Finished in #{b - a} seconds."
+puts "Finished in #{start - fin} seconds."
 puts "#{Fighter.count} fighters in #{Match.count} (#{FighterMatch.count}) matches imported."
