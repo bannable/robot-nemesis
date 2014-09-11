@@ -67,8 +67,14 @@ class Match
 
 		if (red.provisional? && !blue.provisional?)
 			red.update_rating(red_rating.new_rating)
+			if (blue.name == winner)
+				blue.update_rating(blue_rating.new_rating)
+			end
 		elsif (!red.provisional? && blue.provisional?)
 			blue.update_rating(blue_rating.new_rating)
+			if (red.name == winner)
+				red.update_rating(red_rating.new_rating)
+			end
 		else
 			red.update_rating(red_rating.new_rating)
 			blue.update_rating(blue_rating.new_rating)
