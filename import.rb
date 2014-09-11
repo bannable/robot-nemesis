@@ -22,15 +22,17 @@ def parse(line)
 end
 
 it = 0
+start = Time.now
 File.open('./tools/data') do |f|
 	f.each_line do |line|
 		parse line
 		it += 1
-		if (it % 50 == 0)
+		if (it % 100 == 0)
 			puts "#{it} matches imported..."
 		end
 	end
 end
+fin = Time.now
 
-puts "Finished."
+puts "Finished in #{b - a} seconds."
 puts "#{Fighter.count} fighters in #{Match.count} (#{FighterMatch.count}) matches imported."
