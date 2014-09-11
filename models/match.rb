@@ -26,7 +26,7 @@ class Match
 			blue_rating.win
 			red_rating.lose
 		else
-			match.correct = close_guess(red_rating.expected, blue_rating.expected)
+			match.correct = close_guess(red_rating.expected, blue_rating.expected,true)
 			blue_rating.draw
 			red_rating.draw
 		end

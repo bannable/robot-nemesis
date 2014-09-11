@@ -8,7 +8,7 @@ class Fighter
 	property :tier,		String,		:length => 3
 	property :comment,	Text
 	property :match_count,	Integer,	:default => 0, :required => true
-	property :rating,	Integer,	:default => 1000, :required => true
+	property :rating,	Integer,	:default => 1300, :required => true
 
 	has n, :results, 'FighterMatch'
 	has n, :matches, :through => :results
