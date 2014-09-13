@@ -1,0 +1,49 @@
+<script>
+	function do_json_live(){
+		$.get('update', function(cb){
+			console.log(cb);
+			active = cb.active;
+			document.getElementById("rname").innerHTML = cb.red_name;
+			document.getElementById("rrating").innerHTML = cb.red_rating;
+			document.getElementById("rexpect").innerHTML = cb.red_expected;
+			document.getElementById("rwins").innerHTML = cb.red_wins;
+			document.getElementById("rmatches").innerHTML = cb.red_matches;
+			document.getElementById("rprov").innerHTML = cb.red_provisional;
+			document.getElementById("bname").innerHTML = cb.blue_name;
+			document.getElementById("brating").innerHTML = cb.blue_rating;
+			document.getElementById("bexpect").innerHTML = cb.blue_expected;
+			document.getElementById("bwins").innerHTML = cb.blue_wins;
+			document.getElementById("bmatches").innerHTML = cb.blue_matches;
+			document.getElementById("bprov").innerHTML = cb.blue_provisional;
+
+			//do something with the `returnJSON`
+			setTimeout(do_json_live, 3000);
+		},'json');
+	}
+	do_json_live();
+</script>
+<table align="center">
+	<tr>
+		<th>Fighter</th>
+		<th>Rating</th>
+		<th>Expected</th>
+		<th>Wins</th>
+		<th>Matches</th>
+		<th>Provisional?</th>
+	<tr>
+		<td id="rname"></td>
+		<td id="rrating"></td>
+		<td id="rexpect"></td>
+		<td id="rwins"></td>
+		<td id="rmatches"></td>
+		<td id="rprov"></td>
+	</tr>
+	<tr>
+		<td id="bname"></td>
+		<td id="brating"></td>
+		<td id="bexpect"></td>
+		<td id="bwins"></td>
+		<td id="bmatches"></td>
+		<td id="bprov"></td>
+	</tr>
+</table>
