@@ -1,8 +1,7 @@
 <script>
 	function do_json_live(){
 		$.get('update', function(cb){
-			console.log(cb);
-			active = cb.active;
+			//active = cb.active;
 			document.getElementById("rname").innerHTML = cb.red_name;
 			document.getElementById("rrating").innerHTML = cb.red_rating;
 			document.getElementById("rexpect").innerHTML = cb.red_expected;
@@ -16,7 +15,6 @@
 			document.getElementById("bmatches").innerHTML = cb.blue_matches;
 			document.getElementById("bprov").innerHTML = cb.blue_provisional;
 
-			//do something with the `returnJSON`
 			setTimeout(do_json_live, 3000);
 		},'json');
 	}
