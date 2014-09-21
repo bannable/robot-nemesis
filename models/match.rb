@@ -75,7 +75,7 @@ class Match < Sequel::Model
 		super
 		validates_unique :id
 		validates_type String, :mode
-		validates_length 15, :mode
+		validates_max_length 15, :mode
 	end
 
 	def before_create
