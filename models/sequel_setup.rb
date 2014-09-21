@@ -40,4 +40,3 @@ DB.create_table? :fighter_matches do
 end	
 
 Sequel::Model.plugin :validation_helpers
-Sequel::Model.plugin :auto_validations
