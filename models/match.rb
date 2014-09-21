@@ -9,7 +9,26 @@ class Match < Sequel::Model
 		if (DEVELOPMENT)
 			puts "RED OLD MATCH COUNT: #{red.matches.count}"
 		end
-		match = Match.create(:mode => mode)
+		match = Match.new(:mode => mode)
+
+		if (red.name == winner)
+			match.correct = close_guess(red_rating.expected, blue_rating.expected)
+			match.victor = red
+			blue_rating.lose
+			red_rating.win
+		elsif (blue.name == winner)
+			match.correct = close_guess(blue_rating.expected, red_rating.expected)
+			match.victor = blue
+			blue_rating.win
+			red_rating.lose
+		else
+			match.correct = close_guess(red_rating.expected, blue_rating.expected,true)
+			blue_rating.draw
+			red_rating.draw
+		end
+
+		match.save
+
 		match.add_fighter red
 		match.add_fighter blue
 
@@ -30,23 +49,6 @@ class Match < Sequel::Model
 		rfm.save
 		bfm.save
 
-		if (red.name == winner)
-			match.correct = close_guess(red_rating.expected, blue_rating.expected)
-			match.victor = red
-			blue_rating.lose
-			red_rating.win
-		elsif (blue.name == winner)
-			match.correct = close_guess(blue_rating.expected, red_rating.expected)
-			match.victor = blue
-			blue_rating.win
-			red_rating.lose
-		else
-			match.correct = close_guess(red_rating.expected, blue_rating.expected,true)
-			blue_rating.draw
-			red_rating.draw
-		end
-		match.save
-		
 		if (DEVELOPMENT)
 			puts "CREATING NEW MATCH: #{match.saved?}"
 			puts match.inspect
