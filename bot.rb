@@ -61,8 +61,8 @@ end
 
 def start_bets(left, right)
 	debug "Preparing a match between (" << left << ") and (" << right << ")"
-	red = Fighter::first_or_create(:name => left)
-	blue = Fighter::first_or_create(:name => right)
+	red = Fighter::find_or_create(:name => left)
+	blue = Fighter::find_or_create(:name => right)
 	update_active(red, blue, true, nil, nil)
 end
 
@@ -142,8 +142,8 @@ $scraper = Cinch::Bot.new do
 				debug "Blue: " << $3 << " (#{$4})"
 			else
 				debug "Not exhibition match..."
-				red = Fighter::first_or_create(:name => $1)
-				blue = Fighter::first_or_create(:name => $3)
+				red = Fighter::find_or_create(:name => $1)
+				blue = Fighter::find_or_create(:name => $3)
 				start_match(red, $2, blue, $4)
 			end
 		end

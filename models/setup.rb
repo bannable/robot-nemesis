@@ -1,11 +1,12 @@
 require 'yaml'
 require 'json'
+require 'logger'
 
 CONFIG = YAML.load_file('config/config.yml') unless defined? CONFIG
 DEVELOPMENT = CONFIG['dev']
 
-require 'data_mapper'
-require './models/dm_setup'
+require 'sequel'
+require './models/sequel_setup'
 require './models/rating'
 require './models/fighter'
 require './models/match'
@@ -13,7 +14,6 @@ require './models/fighter_match'
 require './helpers/stats'
 
 # Fighter (ID) <- FighterMatch(Fighter ID, Match ID, Color) <- Match(ID, Victor, timestamp)
-DataMapper.finalize.auto_upgrade!
 
 PATTERN_NEW		= /^Bets are OPEN/
 PATTERN_NEW_SPLIT	= /^Bets are OPEN for (.*?) vs (.*?)! \(([XSABP]|NEW) Tier\)(?: \(Requested by \w+\))?\s+(?:\(|)(tournament|matchmaking|exhibitions)/

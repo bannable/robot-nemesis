@@ -1,21 +1,14 @@
-class Fighter
-	include DataMapper::Resource
+class Fighter < Sequel::Model
+	set_primary_key :id
 
-	property :id,		Serial
-	property :name,		String,		:required => true, :unique => true
-	property :created_at,	DateTime,	:writer => :private
-	property :updated_at,	DateTime,	:writer => :private
-	property :tier,		String,		:length => 3
-	property :comment,	Text
-	property :match_count,	Integer,	:default => 0, :required => true
-	property :rating,	Integer,	:default => 1300, :required => true
+	one_to_many :results, :class=>:FighterMatch
+	one_to_many :victories, :key=>:victor, :class=>:Match
 
-	has n, :results, 'FighterMatch'
-	has n, :matches, :through => :results
-	has n, :victories, 'Match', :parent_key => [ :id ], :child_key => [ :victor_id ]
+	many_to_many :matches, :join_table=>:fighter_matches
+
 
 	def provisional?
-		if (@match_count < 10)
+		if (self.match_count < 10)
 			return true
 		else
 			return false
@@ -23,15 +16,16 @@ class Fighter
 	end
 
 	def k_factor
-		if (@match_count < 10)
+		mc = self.match_count
+		if (mc < 10)
 			return 100
-		elsif (@match_count < 15)
+		elsif (mc < 15)
 			return 50
-		elsif (@match_count < 20)
+		elsif (mc < 20)
 			return 30
-		elsif (@match_count < 25)
+		elsif (mc < 25)
 			return 20
-		elsif (@match_count < 30)
+		elsif (mc < 30)
 			return 10
 		else
 			return 7
@@ -42,6 +36,27 @@ class Fighter
 		self.rating = new_rating
 		self.match_count += 1
 		self.save
+	end
+
+
+
+	def validate
+		super
+		validates_presence :name
+		validates_unique :name
+		validates_type String, :name
+		validates_integer :rating, :allow_nil=>true
+		validates_integer :match_count, :allow_nil=>true
+	end
+
+	def before_create
+		self.created_at = Time.now
+		super
+	end
+
+	def before_save
+		self.updated_at = Time.now
+		super
 	end
 		
 end

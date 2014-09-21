@@ -1,13 +1,14 @@
-class FighterMatch
-	include DataMapper::Resource
+class FighterMatch < Sequel::Model
+	set_primary_key :id
 
-	property :color,	String,		:length => 10
-	property :bets,		Integer
-	property :rating,	Integer
-	
-	belongs_to :fighter,	'Fighter',	:key => true
-	belongs_to :match,	'Match',	:key => true
+	many_to_one :fighter
+	many_to_one :match
 
-	validates_within :color, :set => [ 'red', 'blue' ]
+	def validate
+		super
+		validates_type String, :color
+		validates_max_length 10, :color
+		validates_integer :bets, :allow_nil=>true
+		validates_integer :rating, :allow_nil=>true
+	end
 end
-

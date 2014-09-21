@@ -36,21 +36,20 @@ get "/update" do
 	if ($active_match)
 		red = $active_red
 		blue = $active_blue
-		rvic = red.matches.all(:victor => red).count
 		halt 200, {
 			:active => true,
 			:red_name => red.name,
 			:red_rating => red.rating,
 			:red_expected => $rating_red.expected,
 			:red_provisional => red.provisional?,
-			:red_wins => red.matches.all(:victor => red).count,
-			:red_matches => red.matches.all.count,
+			:red_wins => Match.where(:victor => red).count,
+			:red_matches => red.matches.count,
 			:blue_name => blue.name,
 			:blue_rating => blue.rating,
 			:blue_expected => $rating_blue.expected,
 			:blue_provisional => blue.provisional?,
-			:blue_wins => blue.matches.all(:victor => blue).count,
-			:blue_matches => blue.matches.all.count
+			:blue_wins => Match.where(:victor => blue).count,
+			:blue_matches => blue.matches.count
 		}.to_json
 	else
 		halt 200, {
