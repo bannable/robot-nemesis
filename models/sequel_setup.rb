@@ -26,7 +26,7 @@ DB.create_table? :matches do
 	String		:mode,		:size=>15
 	Boolean		:correct,	:default=>false
 
-	foreign_key :victor_id, :fighters
+	foreign_key :victor_id, :fighters, :null=>false
 end
 
 DB.create_table? :fighter_matches do
@@ -35,8 +35,8 @@ DB.create_table? :fighter_matches do
 	Integer		:bets
 	Integer		:rating
 
-	foreign_key :fighter_id, :fighters
-	foreign_key :match_id, :matches
+	foreign_key :fighter_id, :fighters, :null=>false
+	foreign_key :match_id, :matches, :null=>false
 end	
 
 Sequel::Model.plugin :validation_helpers

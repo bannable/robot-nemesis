@@ -50,7 +50,6 @@ class Match < Sequel::Model
 		bfm.save
 
 		if (DEVELOPMENT)
-			puts "CREATING NEW MATCH: #{match.saved?}"
 			puts match.inspect
 			puts "RED NEW MATCH COUNT: #{red.matches.count}"
 		end
