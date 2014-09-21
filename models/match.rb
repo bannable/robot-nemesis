@@ -74,7 +74,6 @@ class Match < Sequel::Model
 	def validate
 		super
 		validates_unique :id
-		validates_type Boolean, :correct
 		validates_type String, :mode
 		validates_length 15, :mode
 	end
