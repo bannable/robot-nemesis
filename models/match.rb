@@ -34,11 +34,9 @@ class Match < Sequel::Model
 		rfm = FighterMatch.where(
 			:fighter => red,
 			:match => match)
-		puts rfm.inspect
 		bfm = FighterMatch.where(
 			:fighter => blue,
 			:match => match)
-		puts bfm.inspect
 
 		rfm.update(
 			:bets => red_bet,
