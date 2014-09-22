@@ -3,17 +3,6 @@ require 'sinatra'
 require 'sinatra/redirect_with_flash'
 require 'rack-flash'
 
-disable :logging
-# Fuck it, we'll monkey patch it
-module Rack
-	class CommonLogger
-		def call(env)
-			#SHOW ME NOTHING
-			@app.call(env)
-		end
-	end
-end
-
 if (DEVELOPMENT)
 	require 'sinatra/reloader'
 	set :environment, :development
@@ -25,15 +14,14 @@ else
 	SITE_DESCRIPTION = "The Salt Must Flow"
 end
 
+use Rack::Flash, :sweep => true
+
+set :logging, false
 set :session_secret, CONFIG['session_secret']
-enable :sessions
-
-
 set :port, CONFIG['port']
 set :bind, CONFIG['bind']
-set :run, true
+enable :sessions
 
-use Rack::Flash, :sweep => true
 
 get '/' do
 	content_type 'text/html'
