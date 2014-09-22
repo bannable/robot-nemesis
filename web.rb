@@ -4,6 +4,15 @@ require 'sinatra/redirect_with_flash'
 require 'rack-flash'
 
 disable :logging
+# Fuck it, we'll monkey patch it
+module Rack
+	class CommonLogger
+		def call(env)
+			#SHOW ME NOTHING
+			@app.call(env)
+		end
+	end
+end
 
 if (DEVELOPMENT)
 	require 'sinatra/reloader'
