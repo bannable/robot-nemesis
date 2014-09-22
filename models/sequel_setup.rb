@@ -1,6 +1,8 @@
 if (DEVELOPMENT)
 	if (CONFIG['dev_db'])
 		DB = Sequel.connect('sqlite://development.db')
+	elsif (CONFIG['real_db'])
+		DB = Sequel.connect(CONFIG['db_driver'])
 	else
 		DB = Sequel.sqlite
 	end
@@ -30,14 +32,13 @@ DB.create_table? :matches do
 end
 
 DB.create_table? :fighter_matches do
-	primary_key	:id
 	String		:color,		:size=>10	
 	Integer		:bets
 	Integer		:rating
 
 	foreign_key :fighter_id, :fighters, :null=>false
 	foreign_key :match_id, :matches, :null=>false
+	primary_key	[:fighter_id, :match_id]
 end	
 
 Sequel::Model.plugin :validation_helpers
-Sequel::Model.plugin :auto_validations

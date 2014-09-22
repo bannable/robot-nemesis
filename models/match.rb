@@ -28,26 +28,28 @@ class Match < Sequel::Model
 		end
 
 		match.save
-
 		match.add_fighter red
 		match.add_fighter blue
 
 		rfm = FighterMatch.where(
 			:fighter => red,
-			:match => match).first
+			:match => match)
+		puts rfm.inspect
 		bfm = FighterMatch.where(
 			:fighter => blue,
-			:match => match).first
+			:match => match)
+		puts bfm.inspect
 
-		rfm.bets = red_bet
-		rfm.rating = red_rating.old_rating
-		rfm.color = 'red'
-		bfm.bets = blue_bet
-		bfm.rating = blue_rating.old_rating
-		bfm.color = 'blue'
-
-		rfm.save
-		bfm.save
+		rfm.update(
+			:bets => red_bet,
+			:rating => red_rating.old_rating,
+			:color => 'red'
+		)
+		bfm.update(
+			:bets => blue_bet,
+			:rating => blue_rating.old_rating,
+			:color => 'blue'
+		)
 
 		if (DEVELOPMENT)
 			puts match.inspect

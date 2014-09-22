@@ -1,8 +1,8 @@
 class FighterMatch < Sequel::Model
-	set_primary_key :id
-
 	many_to_one :fighter
 	many_to_one :match
+
+	set_primary_key [:fighter, :match]
 
 	def validate
 		super
