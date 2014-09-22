@@ -3,16 +3,17 @@ require 'sinatra'
 require 'sinatra/redirect_with_flash'
 require 'rack-flash'
 
-if (!DEVELOPMENT)
-	set :environment, :production
-	disable :logging
-	SITE_TITLE = "The Salt Advisor"
-	SITE_DESCRIPTION = "The Salt Must Flow"
-else
+disable :logging
+
+if (DEVELOPMENT)
 	require 'sinatra/reloader'
 	set :environment, :development
 	SITE_TITLE = "The Unemployed Salt Advisor"
 	SITE_DESCRIPTION = "The Salt Will Flow Eventually"
+else
+	set :environment, :production
+	SITE_TITLE = "The Salt Advisor"
+	SITE_DESCRIPTION = "The Salt Must Flow"
 end
 
 set :session_secret, CONFIG['session_secret']
