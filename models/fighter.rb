@@ -4,7 +4,7 @@ class Fighter < Sequel::Model
 	one_to_many :results, :class=>:FighterMatch
 	one_to_many :victories, :key=>:victor, :class=>:Match
 
-	many_to_many :matches, :join_table=>:fighter_matches
+	many_to_many :matches, :join_table=>:fighter_matches, :left_key=>:fighter, :right_key=>:match
 
 
 	def provisional?
