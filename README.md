@@ -1,8 +1,10 @@
 A statistical scraper for SaltyBet
 
 Required gems:
-* data_mapper
-* dm_more
-* dm_types
+* sequel
+* sinatra
+* rack-flash
 * cinch
-* eventually sinatra
+* json
+* yaml
+* logger
