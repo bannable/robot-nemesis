@@ -110,10 +110,6 @@ $scraper = Cinch::Bot.new do
 		c.password = 'oauth:' << CONFIG['oauth_token']
 	end
 
-	on :connect do
-		bot_ready = true
-	end
-
 	on :message, PATTERN_NEW do |m|
 		if (m.user == "waifu4u" && PATTERN_NEW_SPLIT =~ m.message)
 			if (DEVELOPMENT) 
