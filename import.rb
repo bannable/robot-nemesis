@@ -1,4 +1,4 @@
-require './models/setup.rb'
+require './models/setup'
 
 def parse(line)
 	if /^(?<mred>.*?) - \$(?<red_bet>[\d]+), (?<mblue>.*?) - \$(?<blue_bet>[\d]++)\s+(?<winner>.*?)\s+\d{1,2}:/ =~ line

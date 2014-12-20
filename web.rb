@@ -1,4 +1,4 @@
-require './models/setup.rb'
+require './models/setup'
 require 'sinatra'
 require 'sinatra/redirect_with_flash'
 require 'rack-flash'
