@@ -21,6 +21,7 @@ set :session_secret, CONFIG['session_secret']
 set :port, CONFIG['port']
 set :bind, CONFIG['bind']
 enable :sessions
+enable :run
 
 
 get '/' do
