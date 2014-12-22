@@ -3,7 +3,7 @@ class Match < Sequel::Model
 
 	one_to_many :results, :class=>:FighterMatch
 	many_to_one :victor, :class=>:Fighter
-	many_to_many :fighters, :join_table=>:fighter_matches, :left_key=>:match, :right_key=>:fighter
+	many_to_many :fighters, :join_table=>:fighter_matches, :left_key=>:match_id, :right_key=>:fighter_id
 
 	def self.play(red, blue, red_bet, blue_bet, red_rating, blue_rating, mode, winner = nil)
 		if (DEVELOPMENT)
